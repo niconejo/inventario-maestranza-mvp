@@ -1,42 +1,55 @@
 <template>
   <Navbar />
-  <h1>Gestión de Componentes (Kits)</h1>
+  <div class="container mt-4">
+    <h1 class="mb-4">Gestión de Componentes (Kits)</h1>
 
-  <!-- Formulario de Crear/Editar -->
-  <form @submit.prevent="guardarComponente">
-    <div>
-      <label>Nombre:</label>
-      <input v-model="nuevoComponente.nombre" placeholder="Nombre" required />
+    <!-- Formulario de Crear/Editar -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">{{ modoEdicion ? 'Editar Componente' : 'Agregar Nuevo Componente' }}</h5>
+        <form @submit.prevent="guardarComponente">
+          <div class="mb-3">
+            <label class="form-label">Nombre:</label>
+            <input v-model="nuevoComponente.nombre" class="form-control" placeholder="Nombre" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descripción:</label>
+            <input v-model="nuevoComponente.descripcion" class="form-control" placeholder="Descripción" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Ubicación:</label>
+            <input v-model="nuevoComponente.ubicacion" class="form-control" placeholder="Ubicación" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Cantidad (stock actual del kit):</label>
+            <input v-model.number="nuevoComponente.cantidad" type="number" min="0" class="form-control" required />
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">
+              {{ modoEdicion ? 'Actualizar Componente' : 'Agregar Componente' }}
+            </button>
+            <button v-if="modoEdicion" type="button" @click="cancelarEdicion" class="btn btn-secondary">
+              Cancelar Edición
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-    <div>
-      <label>Descripción:</label>
-      <input v-model="nuevoComponente.descripcion" placeholder="Descripción" required />
-    </div>
-    <div>
-      <label>Ubicación:</label>
-      <input v-model="nuevoComponente.ubicacion" placeholder="Ubicación" required />
-    </div>
-    <div>
-      <label>Cantidad (stock actual del kit):</label>
-      <input v-model.number="nuevoComponente.cantidad" type="number" min="0" required />
-    </div>
-    <button type="submit">
-      {{ modoEdicion ? 'Actualizar Componente' : 'Agregar Componente' }}
-    </button>
-    <button v-if="modoEdicion" type="button" @click="cancelarEdicion">Cancelar Edición</button>
-  </form>
 
-  <hr />
-
-  <!-- Listado de Componentes -->
-  <h2>Listado de Componentes</h2>
-  <ul>
-    <li v-for="componente in componentes" :key="componente.id">
-      {{ componente.nombre }} — Cantidad: {{ componente.cantidad }}
-      <button @click="editarComponente(componente)">Editar</button>
-      <button @click="eliminarComponente(componente.id)">Eliminar</button>
-    </li>
-  </ul>
+    <!-- Listado de Componentes -->
+    <h2 class="mb-3">Listado de Componentes</h2>
+    <ul class="list-group">
+      <li v-for="componente in componentes" :key="componente.id" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong>{{ componente.nombre }}</strong> — Cantidad: {{ componente.cantidad }}
+        </div>
+        <div class="btn-group">
+          <button @click="editarComponente(componente)" class="btn btn-sm btn-primary">Editar</button>
+          <button @click="eliminarComponente(componente.id)" class="btn btn-sm btn-danger">Eliminar</button>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script setup>

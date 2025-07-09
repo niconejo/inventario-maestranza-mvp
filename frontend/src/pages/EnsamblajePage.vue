@@ -1,37 +1,43 @@
 <template>
   <Navbar />
-  <h1>Ensamblaje de Componentes (Kits)</h1>
+  <div class="container mt-4">
+    <h1 class="mb-4">Ensamblaje de Componentes (Kits)</h1>
 
-  <form @submit.prevent="ensamblar">
-    <div>
-      <label>Selecciona un Componente:</label>
-      <select v-model="componenteSeleccionadoId" required>
-        <option disabled value="">-- Selecciona --</option>
-        <option v-for="componente in componentes" :key="componente.id" :value="componente.id">
-          {{ componente.nombre }}
-        </option>
-      </select>
+    <div class="card mb-4">
+      <div class="card-body">
+        <form @submit.prevent="ensamblar">
+          <div class="mb-3">
+            <label class="form-label">Selecciona un Componente:</label>
+            <select v-model="componenteSeleccionadoId" class="form-select" required>
+              <option disabled value="">-- Selecciona --</option>
+              <option v-for="componente in componentes" :key="componente.id" :value="componente.id">
+                {{ componente.nombre }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Cantidad a Ensamblar:</label>
+            <input v-model.number="cantidadAEnsamblar" type="number" min="1" class="form-control" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Ensamblar</button>
+        </form>
+      </div>
     </div>
 
-    <div>
-      <label>Cantidad a Ensamblar:</label>
-      <input v-model.number="cantidadAEnsamblar" type="number" min="1" required />
+    <div v-if="mensaje" class="alert alert-info mt-4">
+      {{ mensaje }}
     </div>
 
-    <button type="submit">Ensamblar</button>
-  </form>
-
-  <div v-if="mensaje" style="margin-top: 1rem;">
-    <p>{{ mensaje }}</p>
-  </div>
-
-  <div v-if="errores.length > 0" style="margin-top: 1rem;">
-    <h3>Errores de Stock Insuficiente:</h3>
-    <ul>
-      <li v-for="error in errores" :key="error.pieza">
-        {{ error.pieza }}: Stock actual {{ error.stockActual }}, Requerido {{ error.requerido }}
-      </li>
-    </ul>
+    <div v-if="errores.length > 0" class="alert alert-danger mt-4">
+      <h4 class="alert-heading">Errores de Stock Insuficiente:</h4>
+      <ul class="mb-0">
+        <li v-for="error in errores" :key="error.pieza">
+          {{ error.pieza }}: Stock actual {{ error.stockActual }}, Requerido {{ error.requerido }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 

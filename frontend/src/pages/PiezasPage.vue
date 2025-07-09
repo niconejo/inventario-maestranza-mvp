@@ -1,50 +1,63 @@
 <template>
   <Navbar />
-  <h1>Gestión de Piezas</h1>
+  <div class="container mt-4">
+    <h1 class="mb-4">Gestión de Piezas</h1>
 
-  <!-- Formulario (Crear/Editar) -->
-  <form @submit.prevent="guardarPieza">
-    <div>
-      <label>Nombre:</label>
-      <input v-model="nuevaPieza.nombre" placeholder="Nombre" required />
+    <!-- Formulario (Crear/Editar) -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">{{ modoEdicion ? 'Editar Pieza' : 'Agregar Nueva Pieza' }}</h5>
+        <form @submit.prevent="guardarPieza">
+          <div class="mb-3">
+            <label class="form-label">Nombre:</label>
+            <input v-model="nuevaPieza.nombre" class="form-control" placeholder="Nombre" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descripción:</label>
+            <input v-model="nuevaPieza.descripcion" class="form-control" placeholder="Descripción" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Número de Serie:</label>
+            <input v-model="nuevaPieza.numeroSerie" class="form-control" placeholder="Número de Serie" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Ubicación:</label>
+            <input v-model="nuevaPieza.ubicacion" class="form-control" placeholder="Ubicación" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Cantidad:</label>
+            <input v-model.number="nuevaPieza.cantidad" type="number" min="0" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Stock Mínimo:</label>
+            <input v-model.number="nuevaPieza.stockMinimo" type="number" min="0" class="form-control" required />
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">
+              {{ modoEdicion ? 'Actualizar Pieza' : 'Agregar Pieza' }}
+            </button>
+            <button v-if="modoEdicion" type="button" @click="cancelarEdicion" class="btn btn-secondary">
+              Cancelar Edición
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-    <div>
-      <label>Descripción:</label>
-      <input v-model="nuevaPieza.descripcion" placeholder="Descripción" required />
-    </div>
-    <div>
-      <label>Número de Serie:</label>
-      <input v-model="nuevaPieza.numeroSerie" placeholder="Número de Serie" required />
-    </div>
-    <div>
-      <label>Ubicación:</label>
-      <input v-model="nuevaPieza.ubicacion" placeholder="Ubicación" required />
-    </div>
-    <div>
-      <label>Cantidad:</label>
-      <input v-model.number="nuevaPieza.cantidad" type="number" min="0" required />
-    </div>
-    <div>
-      <label>Stock Mínimo:</label>
-      <input v-model.number="nuevaPieza.stockMinimo" type="number" min="0" required />
-    </div>
-    <button type="submit">
-      {{ modoEdicion ? 'Actualizar Pieza' : 'Agregar Pieza' }}
-    </button>
-    <button v-if="modoEdicion" type="button" @click="cancelarEdicion">Cancelar Edición</button>
-  </form>
 
-  <hr />
-
-  <!-- Listado de piezas -->
-  <h2>Listado de Piezas</h2>
-  <ul>
-    <li v-for="pieza in piezas" :key="pieza.id">
-      {{ pieza.nombre }} — Cantidad: {{ pieza.cantidad }}
-      <button @click="editarPieza(pieza)">Editar</button>
-      <button @click="eliminarPieza(pieza.id)">Eliminar</button>
-    </li>
-  </ul>
+    <!-- Listado de piezas -->
+    <h2>Listado de Piezas</h2>
+    <ul class="list-group">
+      <li v-for="pieza in piezas" :key="pieza.id" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong>{{ pieza.nombre }}</strong> — Cantidad: {{ pieza.cantidad }}
+        </div>
+        <div class="btn-group">
+          <button @click="editarPieza(pieza)" class="btn btn-sm btn-primary">Editar</button>
+          <button @click="eliminarPieza(pieza.id)" class="btn btn-sm btn-danger">Eliminar</button>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script setup>
@@ -81,7 +94,7 @@ const guardarPieza = async () => {
 const editarPieza = (pieza) => {
   modoEdicion.value = true;
   piezaEditandoId.value = pieza.id;
-  nuevaPieza.value = { ...pieza }; // Clonamos para editar
+  nuevaPieza.value = { ...pieza };
 };
 
 const cancelarEdicion = () => {
@@ -108,7 +121,6 @@ const limpiarFormulario = () => {
   };
 };
 
-// Cargar al iniciar
 onMounted(() => {
   cargarPiezas();
 });

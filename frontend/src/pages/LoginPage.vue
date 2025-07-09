@@ -1,12 +1,20 @@
 <template>
-  <div>
-    <h1>Login</h1>
-    <form @submit.prevent="handleLogin">
-      <input v-model="username" placeholder="Usuario" required />
-      <input v-model="password" type="password" placeholder="Contraseña" required />
-      <button type="submit">Ingresar</button>
-    </form>
-    <p v-if="error" style="color: red;">{{ error }}</p>
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow" style="min-width: 350px;">
+      <h2 class="mb-4 text-center">Iniciar Sesión</h2>
+      <form @submit.prevent="handleLogin">
+        <div class="mb-3">
+          <label class="form-label">Usuario:</label>
+          <input v-model="username" type="text" class="form-control" placeholder="Usuario" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Contraseña:</label>
+          <input v-model="password" type="password" class="form-control" placeholder="Contraseña" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+      </form>
+      <p v-if="error" class="text-danger mt-3 text-center">{{ error }}</p>
+    </div>
   </div>
 </template>
 
