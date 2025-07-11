@@ -2,6 +2,7 @@
   <Navbar />
   <div class="container mt-4">
     <h1 class="mb-4">Asignar Piezas a Componentes (Kits)</h1>
+    <Alerta :mensaje="alertaMensaje" :tipo="alertaTipo" :mostrar="alertaVisible" />
 
     <!-- Seleccionar componente -->
     <div class="mb-4">
@@ -45,9 +46,9 @@
           <div>
             <strong>{{ relacion.pieza.nombre }}</strong> — Cantidad: {{ relacion.cantidad }}
           </div>
-          <div class="btn-group">
-            <button @click="editarCantidad(relacion)" class="btn btn-sm btn-primary">Editar Cantidad</button>
-            <button @click="eliminarRelacion(relacion.id)" class="btn btn-sm btn-danger">Eliminar</button>
+          <div class="btn-group gap-2">
+            <button @click="editarCantidad(relacion)" class="btn btn-sm btn-outline-primary">Editar Cantidad</button>
+            <button @click="eliminarRelacion(relacion.id)" class="btn btn-sm btn-outline-danger">Eliminar</button>
           </div>
         </li>
       </ul>
@@ -56,6 +57,7 @@
 </template>
 
 <script setup>
+import Alerta from '../components/Alerta.vue';
 import { ref, onMounted } from 'vue';
 import Navbar from '../components/Navbar.vue';
 import { getComponentes } from '../api/componentes';
@@ -67,6 +69,18 @@ import {
   eliminarRelacionPieza
 } from '../api/piezasComponentes';
 
+const alertaMensaje = ref('');
+const alertaTipo = ref('success');
+const alertaVisible = ref(false);
+
+const mostrarAlerta = (mensaje, tipo = 'success') => {
+  alertaMensaje.value = mensaje;
+  alertaTipo.value = tipo;
+  alertaVisible.value = true;
+  setTimeout(() => {
+    alertaVisible.value = false;
+  }, 3000);
+};
 const componentes = ref([]);
 const piezas = ref([]);
 const componenteSeleccionadoId = ref('');
@@ -90,6 +104,7 @@ const agregarPieza = async () => {
     piezaId: nuevaRelacion.value.piezaId,
     cantidad: nuevaRelacion.value.cantidad
   });
+  mostrarAlerta('Piezas asignadas exitosamente al componente');
   nuevaRelacion.value = { piezaId: '', cantidad: 1 };
   await cargarPiezasAsignadas();
 };

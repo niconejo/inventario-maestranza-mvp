@@ -2,6 +2,7 @@
   <Navbar />
   <div class="container mt-4">
     <h1 class="mb-4">Gestión de Componentes (Kits)</h1>
+    <Alerta :mensaje="alertaMensaje" :tipo="alertaTipo" :mostrar="alertaVisible" />
 
     <!-- Formulario de Crear/Editar -->
     <div class="card mb-4">
@@ -43,9 +44,9 @@
         <div>
           <strong>{{ componente.nombre }}</strong> — Cantidad: {{ componente.cantidad }}
         </div>
-        <div class="btn-group">
-          <button @click="editarComponente(componente)" class="btn btn-sm btn-primary">Editar</button>
-          <button @click="eliminarComponente(componente.id)" class="btn btn-sm btn-danger">Eliminar</button>
+        <div class="btn-group gap-2">
+          <button @click="editarComponente(componente)" class="btn btn-sm btn-outline-primary">Editar</button>
+          <button @click="eliminarComponente(componente.id)" class="btn btn-sm btn-outline-danger">Eliminar</button>
         </div>
       </li>
     </ul>
@@ -53,9 +54,22 @@
 </template>
 
 <script setup>
+import Alerta from '../components/Alerta.vue';
 import { ref, onMounted } from 'vue';
 import Navbar from '../components/Navbar.vue';
 import { getComponentes, createComponente, updateComponente, deleteComponente } from '../api/componentes';
+const alertaMensaje = ref('');
+const alertaTipo = ref('success');
+const alertaVisible = ref(false);
+
+const mostrarAlerta = (mensaje, tipo = 'success') => {
+  alertaMensaje.value = mensaje;
+  alertaTipo.value = tipo;
+  alertaVisible.value = true;
+  setTimeout(() => {
+    alertaVisible.value = false;
+  }, 3000);
+};
 
 const componentes = ref([]);
 const nuevoComponente = ref({
@@ -74,12 +88,15 @@ const cargarComponentes = async () => {
 const guardarComponente = async () => {
   if (modoEdicion.value) {
     await updateComponente(componenteEditandoId.value, nuevoComponente.value);
+    mostrarAlerta('Componente actualizado exitosamente');
   } else {
     await createComponente(nuevoComponente.value);
+    mostrarAlerta('Componente agregado exitosamente');
   }
   limpiarFormulario();
   await cargarComponentes();
 };
+
 
 const editarComponente = (componente) => {
   modoEdicion.value = true;
@@ -92,8 +109,9 @@ const cancelarEdicion = () => {
 };
 
 const eliminarComponente = async (id) => {
-  if (confirm('¿Estás seguro de que quieres eliminar este componente?')) {
+  if (confirm('¿Estás seguro de eliminar este componente?')) {
     await deleteComponente(id);
+    mostrarAlerta('Componente eliminado exitosamente', 'danger');
     await cargarComponentes();
   }
 };

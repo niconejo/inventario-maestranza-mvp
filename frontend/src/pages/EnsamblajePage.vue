@@ -2,6 +2,7 @@
   <Navbar />
   <div class="container mt-4">
     <h1 class="mb-4">Ensamblaje de Componentes (Kits)</h1>
+    <Alerta :mensaje="alertaMensaje" :tipo="alertaTipo" :mostrar="alertaVisible" />
 
     <div class="card mb-4">
       <div class="card-body">
@@ -46,6 +47,20 @@ import { ref, onMounted } from 'vue';
 import Navbar from '../components/Navbar.vue';
 import { getComponentes } from '../api/componentes';
 import { ensamblarComponente } from '../api/ensamblaje';
+import Alerta from '../components/Alerta.vue';
+
+const alertaMensaje = ref('');
+const alertaTipo = ref('success');
+const alertaVisible = ref(false);
+
+const mostrarAlerta = (mensaje, tipo = 'success') => {
+  alertaMensaje.value = mensaje;
+  alertaTipo.value = tipo;
+  alertaVisible.value = true;
+  setTimeout(() => {
+    alertaVisible.value = false;
+  }, 3000);
+};
 
 const componentes = ref([]);
 const componenteSeleccionadoId = ref('');
@@ -63,13 +78,13 @@ const ensamblar = async () => {
 
   try {
     const resultado = await ensamblarComponente(componenteSeleccionadoId.value, cantidadAEnsamblar.value);
-    mensaje.value = resultado.message;
+    mostrarAlerta(resultado.message);
     cantidadAEnsamblar.value = 1; // Reiniciar cantidad
   } catch (err) {
     if (err.response && err.response.data && err.response.data.detalleFaltantes) {
       errores.value = err.response.data.detalleFaltantes;
     } else {
-      mensaje.value = 'Ocurrió un error al ensamblar el kit.';
+      mostrarAlerta('Ocurrió un error al ensamblar el kit.', 'danger');
     }
   }
 };

@@ -2,8 +2,8 @@
   <Navbar />
   <div class="container mt-4">
     <h1 class="mb-4">Gestión de Piezas</h1>
-
-    <!-- Formulario (Crear/Editar) -->
+    <!-- ✅ Alerta -->
+    <Alerta :mensaje="alertaMensaje" :tipo="alertaTipo" :mostrar="alertaVisible" />
     <div class="card mb-4">
       <div class="card-body">
         <h5 class="card-title">{{ modoEdicion ? 'Editar Pieza' : 'Agregar Nueva Pieza' }}</h5>
@@ -51,9 +51,9 @@
         <div>
           <strong>{{ pieza.nombre }}</strong> — Cantidad: {{ pieza.cantidad }}
         </div>
-        <div class="btn-group">
-          <button @click="editarPieza(pieza)" class="btn btn-sm btn-primary">Editar</button>
-          <button @click="eliminarPieza(pieza.id)" class="btn btn-sm btn-danger">Eliminar</button>
+        <div class="btn-group gap-2">
+          <button @click="editarPieza(pieza)" class="btn btn-sm btn-outline-primary">Editar</button>
+          <button @click="eliminarPieza(pieza.id)" class="btn btn-sm btn-outline-danger">Eliminar</button>
         </div>
       </li>
     </ul>
@@ -64,7 +64,7 @@
 import { ref, onMounted } from 'vue';
 import Navbar from '../components/Navbar.vue';
 import { getPiezas, createPieza, updatePieza, deletePieza } from '../api/piezas';
-
+import Alerta from '../components/Alerta.vue';
 const piezas = ref([]);
 const nuevaPieza = ref({
   nombre: '',
@@ -77,6 +77,20 @@ const nuevaPieza = ref({
 const modoEdicion = ref(false);
 const piezaEditandoId = ref(null);
 
+// ✅ Nuevo estado para alertas
+const alertaMensaje = ref('');
+const alertaTipo = ref('success');
+const alertaVisible = ref(false);
+
+const mostrarAlerta = (mensaje, tipo = 'success') => {
+  alertaMensaje.value = mensaje;
+  alertaTipo.value = tipo;
+  alertaVisible.value = true;
+  setTimeout(() => {
+    alertaVisible.value = false;
+  }, 3000);
+};
+
 const cargarPiezas = async () => {
   piezas.value = await getPiezas();
 };
@@ -84,8 +98,10 @@ const cargarPiezas = async () => {
 const guardarPieza = async () => {
   if (modoEdicion.value) {
     await updatePieza(piezaEditandoId.value, nuevaPieza.value);
+    mostrarAlerta('Pieza actualizada exitosamente');
   } else {
     await createPieza(nuevaPieza.value);
+    mostrarAlerta('Pieza agregada exitosamente');
   }
   limpiarFormulario();
   await cargarPiezas();
@@ -104,6 +120,7 @@ const cancelarEdicion = () => {
 const eliminarPieza = async (id) => {
   if (confirm('¿Estás seguro de que quieres eliminar esta pieza?')) {
     await deletePieza(id);
+    mostrarAlerta('Pieza eliminada exitosamente', 'danger');
     await cargarPiezas();
   }
 };

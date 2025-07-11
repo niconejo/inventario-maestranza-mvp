@@ -1,8 +1,10 @@
 <template>
   <div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card p-4 shadow" style="min-width: 350px;">
-      <h2 class="mb-4 text-center">Iniciar Sesión</h2>
-      <form @submit.prevent="handleLogin">
+    <div class="w-100" style="max-width: 400px;">
+      <h1 class="text-center mb-4">INVENTARIO MAESTRANZA</h1>
+      <div class="card p-4 shadow">
+        <h2 class="mb-4 text-center">Iniciar Sesión</h2>
+        <form @submit.prevent="handleLogin">
         <div class="mb-3">
           <label class="form-label">Usuario:</label>
           <input v-model="username" type="text" class="form-control" placeholder="Usuario" required />
@@ -14,6 +16,7 @@
         <button type="submit" class="btn btn-primary w-100">Ingresar</button>
       </form>
       <p v-if="error" class="text-danger mt-3 text-center">{{ error }}</p>
+      </div>
     </div>
   </div>
 </template>
